@@ -1,0 +1,215 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User profile</title>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+<style>.profile .table-properties th {
+  font-weight: normal;
+  width: 15rem;
+}
+
+.profile .table-properties td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profile .table-properties tr:first-child td,
+.profile .table-properties tr:first-child th {
+  border-top: none !important;
+}
+
+.profile .img-lg {
+  width: 9rem;
+  height: 9rem;
+}
+</style>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+
+<div id="user" class="container profile">
+  <div class="row">
+    <div class="col text-center mt-3">
+      <img alt="picture" src="<%= user.image_url%>" class="img-lg rounded-circle border shadow" />
+      <h2 class="mt-3"><%= user.displayname %></h2>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="address-tab" data-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="false">Projects</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="links-tab" data-toggle="tab" href="#links" role="tab" aria-controls="links" aria-selected="false">Logros</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <table class="table table-hover table-sm table-properties">
+            <tr v-show="user.sub">
+              <th>id</th>
+              <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 20rem;"><%= user.id%></td>
+            </tr>
+			<tr v-show="user.nickname">
+              <th>login</th>
+              <td><%= user.login %></td>
+            </tr>
+            <tr>
+              <th>first name</th>
+              <td><%= user.first_name %></td>
+            </tr>
+            <tr>
+              <th>last name</th>
+              <td><%= user.last_name %></td>
+            </tr>
+            <tr v-show="user.preferred_username">
+              <th>display name</th>
+              <td><%= user.displayname %></td>
+            </tr>
+            <tr>
+              <th>pool month</th>
+              <td><%= user.pool_month %></td>
+            </tr>
+            <tr>
+              <th>pool year</th>
+              <td><%= user.pool_year %></td>
+            </tr>
+            <tr v-show="user.locale">
+              <th>campus</th>
+              <td><%= user.campus[0].name %></td>
+            </tr>
+			<tr>
+              <th>corretion points</th>
+              <td><%= user.correction_point %></td>
+            </tr>
+            <tr v-show="user.given_name">
+              <th>wallet points</th>
+              <td><%= user.wallet %></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+          <table class="table table-hover table-sm table-properties">
+            <tr v-show="user.email">
+              <th>email</th>
+              <td><%= user.email %></td>
+            </tr>
+            <tr v-show="user.email_verified">
+              <th>location</th>
+              <td><%= user.location %></td>
+            </tr>
+            <tr v-show="user.phone_number">
+              <th>phone number</th>
+              <td><%= user.phone %></td>
+            </tr>
+            <tr v-show="user.phone_number_verified">
+              <th>intra page</th>
+              <td><a href="https://profile.intra.42.fr/users/<%= user.login %>" target="blanck"><%= user.login %></a></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+          <table class="table table-hover table-sm table-properties">
+			<tr>
+              <th>Name</th>
+              <th>Final Mark</th>
+			  <th>Status</th>
+            </tr>
+			<% for (var i = 0; i < user.projects_users.length; i++) { %>
+            <tr>
+				<td><%= user.projects_users[i].project.name %></td>
+				<td><%= user.projects_users[i].final_mark %></td>
+				<td><%= user.projects_users[i].status %></td>
+            </tr>
+			<% } %>
+          </table>
+        </div>
+
+        <div class="tab-pane fade" id="links" role="tabpanel" aria-labelledby="links-tab">
+          <table class="table table-hover table-sm table-properties">
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Tier</th>
+				<th>Kind</th>
+            </tr>
+			<% for (var i = 0; i < user.achievements.length; i++) { %>
+				<tr>
+					<td> <%= user.achievements[i].name %> </td>
+					<td> <%= user.achievements[i].description %> </td>
+					<td> <%= user.achievements[i].tier %> </td>
+					<td> <%= user.achievements[i].kind %> </td>
+				</tr>
+			<% } %>
+		</table>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 class="text-center">Tus cursus</h2>
+<% for (var i = 0; i < user.cursus_users.length; i++) { %>
+<div>
+	<h4 class="text-center"><%= user.cursus_users[i].cursus.name%></h4>
+          <table class="table table-hover table-sm table-properties">
+            <tr>
+              <th>Level</th>
+              <td><%= user.cursus_users[i].level %></td>
+            </tr>
+            <tr>
+              <th>Begin at</th>
+              <td><%= user.cursus_users[i].begin_at %></td>
+            </tr>
+            <tr>
+              <th>Grade</th>
+              <td><%= user.cursus_users[i].grade %></td>
+            </tr>
+            <tr>
+              <th>Blackholed at</th>
+              <td><%= user.cursus_users[i].blackholed_at %></td>
+            </tr>
+          </table>
+	<h4 class="text-center"><%= user.cursus_users[i].cursus.name%> skills</h4>
+	<table class="table table-hover table-sm table-properties">
+			<tr>
+              <th>Name</th>
+              <th>Level</th>
+            </tr>
+			<% for (var x = 0; x < user.cursus_users[i].skills.length; x++) { %>
+			<tr>
+				<td> <%= user.cursus_users[i].skills[x].name %> </td>
+				<td> <%= user.cursus_users[i].skills[x].level %> </td>
+			</tr>
+		<% } %>
+	  </table>
+</div>
+<% } %>
+<div class="row">
+	<div class="col-md-3"></div>
+	<div class="col-md-6 content text-center">
+		<h3>¿Quieres saberlo todo de otro estudiante?</h3>
+		<form role="form" method="post" action="/request">
+			<div class="form-group">
+				<input type="text" class="form-control" name="request" id="request">
+			</div>
+			<button type="submit" class="btn btn-default">Buscar</button>
+		</form>
+	</div>
+	<div class="col-md-3"></div>
+</div>
+</body>
+</html>
